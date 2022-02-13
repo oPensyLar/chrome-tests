@@ -25,7 +25,7 @@ pip -r requeriments.txt
 ```
 
 
-last step, edit you config.json
+Last step, edit you config.json
 ```json
 {
 	"driver_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\chromedriver.exe",
