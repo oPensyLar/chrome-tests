@@ -1,0 +1,5 @@
+{
+	"driver_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\chromedriver.exe",
+	"refresh_count" : 20,
+	"velocity_refresh" : 0
+}

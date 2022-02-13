@@ -3,7 +3,7 @@ from selenium.common.exceptions import TimeoutException, WebDriverException
 import time
 import os
 import LnkParse3
-
+import json
 
 def parse_lnk(lnk_path):
     ret_str = None
@@ -29,29 +29,33 @@ def ran_instance(executable_path, data_instance):
     if data_instance["args"]["profile_path"] is not None:
         data_dir = 'user-data-dir=' + data_instance["profile_folder"]["'profile_path'"]
         chrome_opts.add_argument(data_dir)
+        time.sleep(data_instance["velocity_refresh"])
 
     wdriv = webdriver.Chrome(executable_path=executable_path, options=chrome_opts)
 
     # loop main
     wdriv.get("chrome://new-tab-page")
+
     for c_num_refresh in range(data_instance["num_refresh"]):
+        print("[+] Iter:: " + str(c_num_refresh) + " step:: 0x1")
         wdriv.refresh()
-        time.sleep(2)
+        time.sleep(data_instance["velocity_refresh"])
 
     # loop new tab
     wdriv.execute_script('''window.open("chrome://new-tab-page","_blank");''')
     wdriv.switch_to.window(wdriv.window_handles[1])
     for c_num_refresh in range(data_instance["num_refresh"]):
+        print("[+] Iter:: " + str(c_num_refresh) + " step:: 0x2")
         wdriv.refresh()
-        time.sleep(6)
+        time.sleep(data_instance["velocity_refresh"])
 
     wdriv.close()
 
     # main tab again
     wdriv.switch_to.window(wdriv.window_handles[0])
     for c_num_refresh in range(data_instance["num_refresh"]):
+        print("[+] Iter:: " + str(c_num_refresh) + " step:: 0x3")
         wdriv.refresh()
-        time.sleep(2)
 
     print("[+] Closing browser instance")
     wdriv.quit()
@@ -68,14 +72,18 @@ def read_lnk(path):
 
 
 def deploy():
-    lnk_cmds_line = read_lnk("links")
-    exec_path = "P:\\tools\\chromium-driver\\chromedriver_win32-97\\chromedriver.exe"
 
-    for cmd_line in lnk_cmds_line:
-        data_cfg = {"num_refresh": 10, "velocity_refresh": 10, "args": cmd_line}
-        ran_instance(exec_path, data_cfg)
+    with open("config.json", "r") as fp:
+        json_props = json.load(fp)
 
-    print("[+] Finish script")
+        lnk_cmds_line = read_lnk("links")
+        exec_path = json_props["driver_path"]
+
+        for cmd_line in lnk_cmds_line:
+            data_cfg = {"num_refresh": json_props["refresh_count"], "velocity_refresh": json_props["velocity_refresh"], "args": cmd_line}
+            ran_instance(exec_path, data_cfg)
+
+        print("[+] Finish script")
 
 
 deploy()
