@@ -63,4 +63,4 @@ python main.py
 ## Screenshots
 ---
 
-![Screenshot index](https://github.com/oPensyLar/chrome-tests/raw/master/images/chrome-version.png)
+![Screenshot index](https://github.com/oPensyLar/chrome-tests/raw/master/images/deploy.gif)
