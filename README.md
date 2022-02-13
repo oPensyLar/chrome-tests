@@ -10,10 +10,12 @@ Simple Pythont test script for Chrome/Chromium bench/stress tests (running  mult
 
 Please check you Chrome/Chomium version
 
+![Screenshot index](https://github.com/oPensyLar/chrome-tests/raw/master/images/chrome-version.png)
 
-Now download you driver from:
 
+Now download you driver from [Chromium.org](https://chromedriver.chromium.org/downloads)
 
+![Screenshot index](https://github.com/oPensyLar/chrome-tests/raw/master/download-chrome-driver.png)
 
 
 Ok, now install Python deps
@@ -52,13 +54,13 @@ python main.py
 
 ### Script Tests env
 
-:white_check_mark: Python3 (Anaconda works)
-:white_check_mark: Windows 10/11 x64
-:white_check_mark: Chrome/Chormium works
+*  Python3 (Anaconda works)
+*  Windows 10/11 x64
+*  Chrome/Chormium works
 
 
 
 ## Screenshots
 ---
 
-![Screenshot index](https://i.imgur.com/TPZsef6.png)
+![Screenshot index](https://github.com/oPensyLar/chrome-tests/raw/master/images/chrome-version.png)
