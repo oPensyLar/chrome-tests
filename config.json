@@ -1,5 +1,6 @@
 {
-	"driver_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\chromedriver.exe",
-	"refresh_count" : 20,
+	"chrome_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\BBB.exe",
+	"brave_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\AAA.exe",
+	"refresh_count" : 90,
 	"velocity_refresh" : 0
 }
