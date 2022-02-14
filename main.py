@@ -30,13 +30,14 @@ def parse_lnk(lnk_path):
 
 def ran_instance(executable_path, data_instance, cfg_instance):
     chrome_opts = webdriver.ChromeOptions()
+    data_dir = ""
+    chrome_opts.binary_location = data_instance["browser_path"]
 
     # check profile path
-#    if data_instance["profile_path"] is not None:
-#        data_dir = 'user-data-dir=' + data_instance["profile_path"]
-#        chrome_opts.add_argument(data_dir)
-
-    chrome_opts.binary_location = data_instance["browser_path"]
+    if data_instance["profile_path"] is not None:
+        path = data_instance["profile_path"].replace("\"", "")
+        data_dir = '--profile-directory==' + path
+        chrome_opts.add_argument(data_dir)
 
     wdriv = webdriver.Chrome(executable_path=executable_path, chrome_options=chrome_opts)
 
