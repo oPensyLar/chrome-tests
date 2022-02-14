@@ -99,6 +99,8 @@ def deploy_threads():
         data_cfg = {"num_refresh": json_props["refresh_count"], "velocity_refresh": json_props["velocity_refresh"]}
         thread_list = list()
 
+        print("[+] You Driver path:: " + exec_path)
+
         with futures.ThreadPoolExecutor() as executor:
             future_test_results = [executor.submit(real_deploy, exec_path, cmd_line, data_cfg) for cmd_line in lnk_cmds_line]
             for future_test_result in future_test_results:
