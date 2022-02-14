@@ -15,46 +15,52 @@ def parse_lnk(lnk_path):
         str_to_find = "--profile-directory="
 
         if lnk_json_data['data'].get('command_line_arguments') is not None:
-            start_on = lnk_json_data['data']['command_line_arguments'].find(str_to_find) + len(str_to_find)
-            ret_str = lnk_json_data['data']['command_line_arguments'][20:]
+            profile_directory_found = lnk_json_data['data']['command_line_arguments'].find(str_to_find) + len(str_to_find)
+            param = lnk_json_data['data']['command_line_arguments'][profile_directory_found:]
 
-        ret_obj = {"filename": lnk_path,  "profile_path": ret_str}
+            browse_full_path = lnk_json_data['link_info']['local_base_path']
+
+            if os.path.isfile(browse_full_path) is False:
+                browse_full_path = None
+
+        ret_obj = {"filename": lnk_path,  "profile_path": param, "browser_path": browse_full_path}
 
         return ret_obj
 
 
-def ran_instance(executable_path, data_instance):
+def ran_instance(executable_path, data_instance, cfg_instance):
     chrome_opts = webdriver.ChromeOptions()
 
     # check profile path
-    if data_instance["profile_path"] is not None:
-        data_dir = 'user-data-dir=' + data_instance["profile_path"]
-        chrome_opts.add_argument(data_dir)
-        time.sleep(data_instance["velocity_refresh"])
+#    if data_instance["profile_path"] is not None:
+#        data_dir = 'user-data-dir=' + data_instance["profile_path"]
+#        chrome_opts.add_argument(data_dir)
 
-    wdriv = webdriver.Chrome(executable_path=executable_path)
+    chrome_opts.binary_location = data_instance["browser_path"]
+
+    wdriv = webdriver.Chrome(executable_path=executable_path, chrome_options=chrome_opts)
 
     # loop main
     wdriv.get("chrome://new-tab-page")
 
-    for c_num_refresh in range(data_instance["num_refresh"]):
+    for c_num_refresh in range(cfg_instance["num_refresh"]):
         print("Iter:: " + str(c_num_refresh) + " step:: 0x1")
         wdriv.refresh()
-        time.sleep(data_instance["velocity_refresh"])
+        time.sleep(cfg_instance["velocity_refresh"])
 
     # loop new tab
     wdriv.execute_script('''window.open("chrome://new-tab-page","_blank");''')
     wdriv.switch_to.window(wdriv.window_handles[1])
-    for c_num_refresh in range(data_instance["num_refresh"]):
+    for c_num_refresh in range(cfg_instance["num_refresh"]):
         print("Iter:: " + str(c_num_refresh) + " step:: 0x2")
         wdriv.refresh()
-        time.sleep(data_instance["velocity_refresh"])
+        time.sleep(cfg_instance["velocity_refresh"])
 
     wdriv.close()
 
     # main tab again
     wdriv.switch_to.window(wdriv.window_handles[0])
-    for c_num_refresh in range(data_instance["num_refresh"]):
+    for c_num_refresh in range(cfg_instance["num_refresh"]):
         print("Iter:: " + str(c_num_refresh) + " step:: 0x3")
         wdriv.refresh()
 
@@ -67,17 +73,20 @@ def read_lnk(path):
 
     for file in os.listdir(path):
         final_path = path + "\\" + file
-        ret_data.append(parse_lnk(final_path))
+        lnk_info = parse_lnk(final_path)
+
+        if lnk_info["browser_path"] is not None:
+            ret_data.append(lnk_info)
+
+        else:
+            print("[!] Browser in " + lnk_info["filename"] + " not found!")
 
     return ret_data
 
 
 def real_deploy(exec_path, lnk_props, cfg):
-    cfg["profile_path"] = lnk_props['profile_path']
-    cfg["filename"] = lnk_props['filename']
-
-    print("[+] Running " + cfg["filename"])
-    ran_instance(exec_path, cfg)
+    print("[+] Running " + lnk_props["filename"])
+    ran_instance(exec_path, lnk_props, cfg)
 
 
 def get_driver_path():
@@ -94,7 +103,7 @@ def get_driver_path():
 def deploy_threads():
     with open("config.json", "r") as fp:
         json_props = json.load(fp)
-        lnk_cmds_line = read_lnk("links")
+        lnk_props = read_lnk("links")
         exec_path = get_driver_path()
         data_cfg = {"num_refresh": json_props["refresh_count"], "velocity_refresh": json_props["velocity_refresh"]}
         thread_list = list()
@@ -102,7 +111,7 @@ def deploy_threads():
         print("[+] You Driver path:: " + exec_path)
 
         with futures.ThreadPoolExecutor() as executor:
-            future_test_results = [executor.submit(real_deploy, exec_path, cmd_line, data_cfg) for cmd_line in lnk_cmds_line]
+            future_test_results = [executor.submit(real_deploy, exec_path, one_lnk_prop, data_cfg) for one_lnk_prop in lnk_props]
             for future_test_result in future_test_results:
                 try:
                     test_result = future_test_result.result()

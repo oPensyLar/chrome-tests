@@ -1,5 +1,5 @@
 # Chrome stress tests
-Simple Pythont test script for Chrome/Chromium bench/stress tests (running  multi instances)
+Simple Pythont test script for Chrome/Chromium/Brave bench/stress tests lauching from .lnk (running  multi instances)
 
 
 
@@ -8,14 +8,19 @@ Simple Pythont test script for Chrome/Chromium bench/stress tests (running  mult
 
 ### Before run..
 
-Please check you Chrome/Chomium version
+Please check you Chrome/Chomium/Brave version
 
 ![Screenshot version](https://github.com/oPensyLar/chrome-tests/raw/master/images/chrome-version.png)
 
 
-Now download you driver from [Chromium.org](https://chromedriver.chromium.org/downloads)
+Download you driver from [Chromium.org](https://chromedriver.chromium.org/downloads)
 
 ![Screenshot download](https://github.com/oPensyLar/chrome-tests/raw/master/images/download-chrome-driver.png)
+
+
+Drop Chrome driver in ```driver``` folder
+
+Drop you .lnk files in ```links``` folder
 
 
 Ok, now install Python deps
@@ -28,7 +33,6 @@ pip -r requeriments.txt
 Last step, edit you config.json
 ```json
 {
-	"driver_path" : "P:\\tools\\chromium-driver\\chromedriver_win32-97\\chromedriver.exe",
 	"refresh_count" : 20,
 	"velocity_refresh" : 0
 }
@@ -38,10 +42,7 @@ Last step, edit you config.json
 Times to refresh tab
 
 * velocity_refresh
-Secs to refresh tab
-
-* driver_path
-Path you driver (please check you Chrome version before download driver)
+Secs to refresh x tab
 
 
 Now ran :blush:
@@ -56,7 +57,7 @@ python main.py
 
 *  Python3 (Anaconda works)
 *  Windows 10/11 x64
-*  Chrome/Chormium works
+*  Chrome/Chormium/Brave works
 
 
 
