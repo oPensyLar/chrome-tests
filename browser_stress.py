@@ -37,9 +37,9 @@ def ran_instance(executable_path, lnk_data, instance_info):
     # check profile path
     if lnk_data["profile_path"] is not None:
         profile_folder_path = lnk_data["profile_path"].replace("\"", "")
-        path = os.environ["APPDATA"]
-        files = glob.glob('C:\\Users\\opensylar\\AppData\\Local\\BraveSoftware\\Brave*')
-        final_path = files[0] + "\\" + profile_folder_path
+        path = os.environ["APPDATA"] + "\\..\\"
+        files = glob.glob(path + '\\Local\\BraveSoftware\\Brave*')
+        final_path = files[0] + profile_folder_path
         data_dir = '--user-data-dir=' + final_path
         chrome_opts.add_argument(data_dir)
 
