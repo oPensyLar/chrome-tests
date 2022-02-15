@@ -4,6 +4,8 @@ import time
 import os
 import sys
 import json
+import glob
+
 
 def parse_lnk(lnk_path):
     ret_str = None
@@ -34,8 +36,12 @@ def ran_instance(executable_path, lnk_data, instance_info):
 
     # check profile path
     if lnk_data["profile_path"] is not None:
-        path = lnk_data["profile_path"].replace("\"", "")
-        data_dir = '--user-data-dir=' + path
+        profile_folder_path = lnk_data["profile_path"].replace("\"", "")
+        path = os.environ["APPDATA"]
+        files = glob.glob('C:\\Users\\opensylar\\AppData\\Local\\BraveSoftware\\Brave*')
+        final_path = files[0] + "\\" + profile_folder_path
+        data_dir = '--user-data-dir=' + final_path
+        chrome_opts.add_argument(data_dir)
 
     wdriv = webdriver.Chrome(executable_path=executable_path, chrome_options=chrome_opts)
 
