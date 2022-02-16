@@ -1,6 +1,6 @@
 {
 
-	"concurrent_instances": 20,
+	"concurrent_instances": 3,
 	"total_iterations" : 10,
 
 	"tabs" : {

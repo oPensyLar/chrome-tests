@@ -33,22 +33,47 @@ pip -r requeriments.txt
 Last step, edit you config.json
 ```json
 {
-	"refresh_count" : 20,
-	"velocity_refresh" : 0
+
+	"concurrent_instances": 20,
+	"total_iterations" : 10,
+
+	"tabs" : {
+
+		"tab1":
+		{
+			"refresh_count" : 90,
+			"velocity_refresh" : 0
+		},
+
+		"tab2":
+		{
+			"refresh_count" : 80,
+			"velocity_refresh" : 0
+		},
+
+		"tab1_1":
+		{
+			"refresh_count" : 40,
+			"velocity_refresh" : 0
+		}
+	}
 }
 ```
 
-* refresh_count
-Times to refresh tab
+* total_iterations
+Total loops to lauch
 
-* velocity_refresh
-Secs to refresh x tab
+* concurrent_instances
+Process concurrent lauch
+
+* tab1, tab2, tab1_1
+Tab1 = first tab, Tab2 = second tab, Tab1_1 = close tab2 back tab1
 
 
 Now ran :blush:
 
 ```
-python main.py
+python launcher.py
 ```
 
 
@@ -57,7 +82,7 @@ python main.py
 
 *  Python3 (Anaconda works)
 *  Windows 10/11 x64
-*  Chrome/Chormium/Brave works
+*  Chrome/Chormium/Brave/Brave Nightly works
 
 
 
