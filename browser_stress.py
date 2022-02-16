@@ -37,13 +37,15 @@ def ran_instance(executable_path, lnk_data, instance_info):
     # check profile path
     if lnk_data["profile_path"] is not None:
         profile_folder_path = lnk_data["profile_path"].replace("\"", "")
-        path = os.environ["APPDATA"] + "\\..\\"
-        files = glob.glob(path + '\\Local\\BraveSoftware\\Brave*')
-        final_path = files[0] + profile_folder_path
-        data_dir = '--user-data-dir=' + final_path
+        path = os.environ["LOCALAPPDATA"] + "\\"
+        files = glob.glob(path + 'BraveSoftware\\Brave*')
+        final_path = files[0] + "\\User Data"
+        data_dir = 'user-data-dir=' + final_path
         chrome_opts.add_argument(data_dir)
+        profile_dir = "profile-directory=" + profile_folder_path
+        chrome_opts.add_argument(profile_dir)
 
-    wdriv = webdriver.Chrome(executable_path=executable_path, chrome_options=chrome_opts)
+    wdriv = webdriver.Chrome(executable_path=executable_path, options=chrome_opts)
 
     wdriv.get("brave://newtab")
 
@@ -102,14 +104,21 @@ def get_driver_path():
 
 
 def ran():
-    with open("config.json", "r") as fp:
-        json_props = json.load(fp)
-        lnk_files = read_lnk("links")
-        exec_path = get_driver_path()
-        print("[+] You Driver path:: " + exec_path)
+    with open("fail.log", "a") as fp_log:
+        with open("config.json", "r") as fp_cfg:
+            json_props = json.load(fp_cfg)
+            lnk_files = read_lnk("links")
+            exec_path = get_driver_path()
+            print("[+] You Driver path:: " + exec_path)
 
-        lnk_info = parse_lnk(sys.argv[1])
-        ran_instance(exec_path, lnk_info, json_props)
+            lnk_info = parse_lnk(sys.argv[1])
+
+            try:
+                ran_instance(exec_path, lnk_info, json_props)
+
+            except:
+                fp_log.write("[!] ERROR running " + sys.argv[1])
+                fp_cfg.close()
 
 
 ran()
