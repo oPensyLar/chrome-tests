@@ -58,7 +58,7 @@ def ran_instance(executable_path, lnk_data, instance_info):
         time.sleep(instance_info["tabs"]["tab1"]["velocity_refresh"])
 
     # loop new tab
-    wdriv.execute_script("window.open('','_blank');")
+    wdriv.execute_script("window.open('brave://newtab','_blank');")
     wdriv.switch_to.window(wdriv.window_handles[1])
     for c_num_refresh in range(instance_info["tabs"]["tab2"]["refresh_count"]):
         print("Iter:: " + str(c_num_refresh) + " step:: 0x2")
