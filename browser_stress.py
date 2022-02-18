@@ -5,6 +5,7 @@ import os
 import sys
 import json
 import glob
+import shutil
 
 
 def parse_lnk(lnk_path):
@@ -29,20 +30,47 @@ def parse_lnk(lnk_path):
         return ret_obj
 
 
-def ran_instance(executable_path, lnk_data, instance_info):
+def get_user_data_dir_tmp(flag):
+
+    if flag is 0x1:
+        tmp = os.environ["tmp"] + "\\brave-test\\"
+        if os.path.isdir(tmp) is False:
+            os.mkdir(tmp)
+
+        tmp += "user_data\\"
+        if os.path.isdir(tmp) is False:
+            os.mkdir(tmp)
+
+        return tmp
+
+    return None
+
+
+def ran_instance(executable_path, param2, lnk_data, instance_info):
     chrome_opts = webdriver.ChromeOptions()
-    data_dir = ""
     chrome_opts.binary_location = lnk_data["browser_path"]
 
     # check profile path
     if lnk_data["profile_path"] is not None:
+        # Get profile target from original path
         profile_folder_path = lnk_data["profile_path"].replace("\"", "")
         path = os.environ["LOCALAPPDATA"] + "\\"
         files = glob.glob(path + 'BraveSoftware\\Brave*')
-        final_path = files[0] + "\\User Data"
+        current_user_data = files[0] + "\\User Data\\"
+        current_user_data_dir = current_user_data + profile_folder_path
 
-        # data_dir = 'user-data-dir=' + final_path
-        # chrome_opts.add_argument(data_dir)
+        # cp current User Data to tmp dir
+        new_user_data_dir = get_user_data_dir_tmp(0x1)
+        user_data_folders = os.listdir(new_user_data_dir)
+        new_user_data_dir += profile_folder_path + "-" + str(len(user_data_folders))
+        origin_base_folder = os.getcwd() + "\\" + "base"
+        shutil.copytree(origin_base_folder, new_user_data_dir)
+        data_dir = 'user-data-dir=' + new_user_data_dir
+        chrome_opts.add_argument(data_dir)
+
+        # cp target Profile to tmp dir
+        new_profile_dir = new_user_data_dir + "\\" + profile_folder_path + "\\"
+        shutil.copytree(current_user_data_dir, new_profile_dir)
 
         profile_dir = "profile-directory=" + profile_folder_path
         chrome_opts.add_argument(profile_dir)
@@ -58,8 +86,11 @@ def ran_instance(executable_path, lnk_data, instance_info):
         time.sleep(instance_info["tabs"]["tab1"]["velocity_refresh"])
 
     # loop new tab
-    wdriv.execute_script("window.open('brave://newtab','_blank');")
+    wdriv.execute_script("window.open('','_blank');")
+    # wdriv.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
     wdriv.switch_to.window(wdriv.window_handles[1])
+    wdriv.get("brave://newtab")
+
     for c_num_refresh in range(instance_info["tabs"]["tab2"]["refresh_count"]):
         print("Iter:: " + str(c_num_refresh) + " step:: 0x2")
         wdriv.refresh()
@@ -106,19 +137,19 @@ def get_driver_path():
 
 
 def ran():
-
-    if len(sys.argv) is 0:
-        print("[!] Need .lnk param")
+    if len(sys.argv) is not 2:
+        print("[!] You don't ranme!")
         exit(0xF)
 
     with open("fail.log", "a") as fp_log:
         with open("config.json", "r") as fp_cfg:
             json_props = json.load(fp_cfg)
-            lnk_files = read_lnk("links")
             exec_path = get_driver_path()
             print("[+] You Driver path:: " + exec_path)
+            print("[+] You lnk:: " + sys.argv[1])
 
             lnk_info = parse_lnk(sys.argv[1])
-            ran_instance(exec_path, lnk_info, json_props)
+            ran_instance(exec_path, None, lnk_info, json_props)
+
 
 ran()
