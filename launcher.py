@@ -34,8 +34,11 @@ def browser_instances_ran():
         json_props = json.load(fp)
         split_on = json_props["concurrent_instances"]
         lnk_files = os.listdir(folder_lnk)
+        print("[+] Links found:: " + str(len(lnk_files)))
         list_split_on = int(len(lnk_files) / split_on)
+        print("[+] list_split_on:: " + str(list_split_on))
         nmp_array = numpy.array_split(numpy.array(lnk_files), list_split_on)
+        print("[+] div:: " + str(len(nmp_array)))
         threads_lst = []
 
         for current_iter in range(json_props["total_iterations"]):
@@ -44,10 +47,6 @@ def browser_instances_ran():
             for c_array in nmp_array:
                 for one_array in c_array:
                     lnk_full_path = os.getcwd() + "\\" + folder_lnk + "\\" + one_array
-
-                    # proc = subprocess.Popen(["python", "browser_stress.py",  lnk_full_path])
-                    # process_lst.append(proc)
-                    # thrad_obj = ran_python_script("python", )
                     thr_obj = threading.Thread(target=ran_python_script, args=["python", "browser_stress.py",  lnk_full_path])
                     thr_obj.start()
                     threads_lst.append(thr_obj)
