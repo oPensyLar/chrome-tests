@@ -1,6 +1,6 @@
 {
 
-	"concurrent_instances": 3,
+	"concurrent_instances": 7,
 	"total_iterations" : 10,
 
 	"tabs" : {
@@ -8,19 +8,19 @@
 		"tab1":
 		{
 			"refresh_count" : 90,
-			"velocity_refresh" : 0
+			"velocity_refresh" : 0.2
 		},
 
 		"tab2":
 		{
 			"refresh_count" : 80,
-			"velocity_refresh" : 0
+			"velocity_refresh" : 0.2
 		},
 
 		"tab1_1":
 		{
 			"refresh_count" : 40,
-			"velocity_refresh" : 0
+			"velocity_refresh" : 0.2
 		}
 	}
 }
